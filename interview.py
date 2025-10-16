@@ -1,4 +1,4 @@
-generate_python_qa_pdf#!/usr/bin/env python3
+#!/usr/bin/env python3
 """
 generate_python_qa_pdf.py
 
@@ -61,7 +61,7 @@ import spacy
 # Load English model with word vectors
 nlp = spacy.load("en_core_web_md")
 
-def remove_semantic_duplicates(questions, similarity_threshold=0.80):
+def remove_semantic_duplicates(questions, similarity_threshold=0.95):
     """
     Removes semantically similar or duplicate questions using spaCy embeddings.
     """
@@ -158,7 +158,7 @@ def generate_questions(llm, count=1000, chunk=200):
         log(f"Warning: only generated {len(out)} questions out of requested {count}.")
     # ---- 🧠 NEW STEP: semantic deduplication ----
     print(f"\n🧠 Performing semantic deduplication on {len(out)} questions...")
-    out = remove_semantic_duplicates(out, similarity_threshold=0.90)
+    out = remove_semantic_duplicates(out, similarity_threshold=0.95)
     print(f"✅ After semantic filtering: {len(out)} unique questions retained.\n")    
     return out[:count]
 
@@ -393,10 +393,10 @@ def build_pdf_incremental(qa_pairs, filename=PDF_FILENAME):
 # 3️⃣ Question Generation
 # -----------------------------
 topics = [
-    "Basics", "OOP", "Concurrency", "Async IO", "Networking", "Databases",
+    "Basics", "OOP", "Concurrency", "Async IO",  "Databases","pandas","numpy","langchain and langgraph",
     "Memory Management", "Design Patterns", "Python Internals", "Standard Library",
     "Debugging", "Typing / Type Hints", "Packaging & Modules", "Performance Optimization",
-    "Data Science", "Machine Learning", "Testing & Unit Testing", "Web Development FastAPI",
+    "Data Science", "Machine Learning and NLP basics", "Testing & Unit Testing", "Web Development FastAPI",
     "Logging & Monitoring", "Security", "File I/O & Serialization", "Generators & Iterators",
     "Decorators & Metaclasses", "Context Managers", "Regex", "Functional Programming"
 ]
@@ -425,7 +425,7 @@ def generate_questions_by_topic(llm, questions_per_topic=50):
     print(f"Generated {len(all_questions)} questions before semantic filtering...")
 
     # Semantic deduplication
-    all_questions = remove_semantic_duplicates(all_questions, similarity_threshold=0.80)
+    all_questions = remove_semantic_duplicates(all_questions, similarity_threshold=0.95)
     print(f"✅ {len(all_questions)} unique questions after semantic filtering.")
     return all_questions
 
